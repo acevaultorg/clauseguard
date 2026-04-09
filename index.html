@@ -43,6 +43,9 @@
   <!-- Plausible Analytics -->
   <script defer data-domain="clauseguard.vercel.app" src="https://plausible.io/js/script.js"></script>
 
+  <!-- Stripe.js -->
+  <script src="https://js.stripe.com/v3/"></script>
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -649,7 +652,7 @@
             <span class="text-4xl font-bold text-slate-900 price-display" data-monthly="49" data-annual="39">$39</span>
             <span class="text-slate-500">/month</span>
           </div>
-          <a href="#cta-final" class="mt-6 block w-full text-center py-3 rounded-xl border-2 border-brand-500 text-brand-600 font-semibold hover:bg-brand-50 transition-colors">Start Free Trial</a>
+          <button data-tier="starter" class="stripe-checkout-btn mt-6 block w-full text-center py-3 rounded-xl border-2 border-brand-500 text-brand-600 font-semibold hover:bg-brand-50 transition-colors">Start Free Trial</button>
           <ul class="mt-8 space-y-3">
             <li class="flex items-start gap-3 text-sm text-slate-600"><svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>5 contract reviews/month</li>
             <li class="flex items-start gap-3 text-sm text-slate-600"><svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Risk detection &amp; scoring</li>
@@ -668,7 +671,7 @@
             <span class="text-4xl font-bold text-slate-900 price-display" data-monthly="149" data-annual="119">$119</span>
             <span class="text-slate-500">/month</span>
           </div>
-          <a href="#cta-final" class="mt-6 block w-full text-center py-3 rounded-xl bg-brand-500 text-white font-semibold hover:bg-brand-600 transition-colors cta-glow">Start Free Trial</a>
+          <button data-tier="professional" class="stripe-checkout-btn mt-6 block w-full text-center py-3 rounded-xl bg-brand-500 text-white font-semibold hover:bg-brand-600 transition-colors cta-glow">Start Free Trial</button>
           <ul class="mt-8 space-y-3">
             <li class="flex items-start gap-3 text-sm text-slate-600"><svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><strong>25 contract reviews/month</strong></li>
             <li class="flex items-start gap-3 text-sm text-slate-600"><svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Everything in Starter</li>
@@ -688,7 +691,7 @@
             <span class="text-4xl font-bold text-slate-900 price-display" data-monthly="349" data-annual="279">$279</span>
             <span class="text-slate-500">/month</span>
           </div>
-          <a href="#cta-final" class="mt-6 block w-full text-center py-3 rounded-xl border-2 border-brand-500 text-brand-600 font-semibold hover:bg-brand-50 transition-colors">Start Free Trial</a>
+          <button data-tier="firm" class="stripe-checkout-btn mt-6 block w-full text-center py-3 rounded-xl border-2 border-brand-500 text-brand-600 font-semibold hover:bg-brand-50 transition-colors">Start Free Trial</button>
           <ul class="mt-8 space-y-3">
             <li class="flex items-start gap-3 text-sm text-slate-600"><svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><strong>Unlimited contract reviews</strong></li>
             <li class="flex items-start gap-3 text-sm text-slate-600"><svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>Everything in Professional</li>
@@ -1036,10 +1039,74 @@
     // Track demo usage
     demoBtn.addEventListener('click', () => trackEvent('demo_analyzed'));
 
-    // Track pricing plan clicks
+    // Track pricing plan clicks (legacy anchor fallback — now handled by stripe-checkout-btn below)
     document.querySelectorAll('#pricing a[href="#cta-final"]').forEach((el, i) => {
       const tiers = ['starter', 'professional', 'firm'];
       el.addEventListener('click', () => trackEvent('pricing_plan_selected', { tier: tiers[i] }));
+    });
+
+    // ---- STRIPE CHECKOUT ----
+    // Replace the placeholder values below with your real Stripe keys and price IDs.
+    // publishableKey  → Stripe Dashboard → Developers → API keys → Publishable key
+    // prices.*        → Stripe Dashboard → Products → (each product) → Price ID (price_xxx)
+    const STRIPE_CONFIG = {
+      publishableKey: 'pk_live_REPLACE_ME',
+      prices: {
+        starter:      'price_REPLACE_ME_STARTER',
+        professional: 'price_REPLACE_ME_PROFESSIONAL',
+        firm:         'price_REPLACE_ME_FIRM'
+      }
+    };
+
+    // Detect whether Stripe is configured (keys still have placeholder values)
+    const stripeConfigured = STRIPE_CONFIG.publishableKey !== 'pk_live_REPLACE_ME';
+
+    async function redirectToStripeCheckout(tier) {
+      trackEvent('pricing_plan_selected', { tier });
+
+      // If Stripe is not yet configured, scroll to the waitlist form as fallback
+      if (!stripeConfigured) {
+        document.getElementById('cta-final').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('waitlist-email').focus();
+        return;
+      }
+
+      const priceId = STRIPE_CONFIG.prices[tier];
+      if (!priceId || priceId === 'price_REPLACE_ME_STARTER' ||
+          priceId === 'price_REPLACE_ME_PROFESSIONAL' || priceId === 'price_REPLACE_ME_FIRM') {
+        document.getElementById('cta-final').scrollIntoView({ behavior: 'smooth' });
+        document.getElementById('waitlist-email').focus();
+        return;
+      }
+
+      const btn = document.querySelector(`.stripe-checkout-btn[data-tier="${tier}"]`);
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Redirecting…';
+      }
+
+      try {
+        const stripe = Stripe(STRIPE_CONFIG.publishableKey);
+        const { error } = await stripe.redirectToCheckout({
+          lineItems: [{ price: priceId, quantity: 1 }],
+          mode: 'subscription',
+          successUrl: window.location.origin + '/success.html?tier=' + tier,
+          cancelUrl:  window.location.origin + '/cancel.html'
+        });
+        if (error) {
+          console.error('[ClauseGuard] Stripe error:', error.message);
+          trackEvent('stripe_error', { tier, message: error.message });
+          if (btn) { btn.disabled = false; btn.textContent = 'Start Free Trial'; }
+        }
+      } catch (err) {
+        console.error('[ClauseGuard] Stripe init error:', err);
+        if (btn) { btn.disabled = false; btn.textContent = 'Start Free Trial'; }
+      }
+    }
+
+    // Wire all pricing CTA buttons
+    document.querySelectorAll('.stripe-checkout-btn').forEach(btn => {
+      btn.addEventListener('click', () => redirectToStripeCheckout(btn.dataset.tier));
     });
   </script>
 </body>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout Cancelled — ClauseGuard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Plausible Analytics -->
+  <script defer data-domain="clauseguard.vercel.app" src="https://plausible.io/js/script.js"></script>
+</head>
+<body class="min-h-screen bg-slate-900 flex items-center justify-center px-4" style="font-family:'Inter',system-ui,sans-serif;">
+
+  <div class="max-w-lg w-full text-center">
+    <!-- Icon -->
+    <div class="mx-auto w-20 h-20 bg-slate-700/60 border border-slate-600/50 rounded-full flex items-center justify-center mb-8">
+      <svg class="w-10 h-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+      </svg>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-3xl sm:text-4xl font-bold text-white">No worries.</h1>
+    <p class="mt-4 text-lg text-slate-400">You cancelled checkout — nothing was charged. Your cart is still waiting whenever you're ready.</p>
+
+    <!-- Objection-handling nudge -->
+    <div class="mt-10 bg-slate-800 border border-slate-700 rounded-2xl p-6 text-left space-y-4">
+      <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wide">Still on the fence?</h2>
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        <p class="text-sm text-slate-400"><strong class="text-slate-200">14-day free trial</strong> — no credit card needed to start.</p>
+      </div>
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        <p class="text-sm text-slate-400"><strong class="text-slate-200">Cancel any time</strong> — no lock-in, no cancellation fees.</p>
+      </div>
+      <div class="flex items-start gap-3">
+        <svg class="w-5 h-5 text-brand-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        <p class="text-sm text-slate-400"><strong class="text-slate-200">Have a question?</strong> Email us at <a href="mailto:support@clauseguard.ai" class="text-brand-500 hover:underline">support@clauseguard.ai</a> — we reply within a few hours.</p>
+      </div>
+    </div>
+
+    <!-- CTAs -->
+    <div class="mt-8 flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/#pricing" class="bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+        Back to Pricing
+      </a>
+      <a href="/" class="border border-slate-600 hover:border-slate-400 text-slate-300 hover:text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+        Back to Home
+      </a>
+    </div>
+  </div>
+
+  <script>
+    if (window.plausible) {
+      window.plausible('checkout_cancelled');
+    }
+  </script>
+</body>
+</html>

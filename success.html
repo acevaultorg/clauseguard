@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Welcome to ClauseGuard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#eef2ff', 100: '#e0e7ff', 500: '#6366f1', 600: '#4f46e5', 700: '#4338ca'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Plausible Analytics -->
+  <script defer data-domain="clauseguard.vercel.app" src="https://plausible.io/js/script.js"></script>
+</head>
+<body class="min-h-screen bg-slate-900 flex items-center justify-center px-4" style="font-family:'Inter',system-ui,sans-serif;">
+
+  <div class="max-w-lg w-full text-center">
+    <!-- Icon -->
+    <div class="mx-auto w-20 h-20 bg-emerald-500/20 border border-emerald-500/30 rounded-full flex items-center justify-center mb-8">
+      <svg class="w-10 h-10 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>
+      </svg>
+    </div>
+
+    <!-- Heading -->
+    <h1 class="text-3xl sm:text-4xl font-bold text-white">You're in.</h1>
+    <p class="mt-4 text-lg text-slate-400" id="tier-msg">Your ClauseGuard subscription is active. Start reviewing contracts smarter — right now.</p>
+
+    <!-- Next steps -->
+    <div class="mt-10 bg-slate-800 border border-slate-700 rounded-2xl p-6 text-left space-y-4">
+      <h2 class="text-sm font-semibold text-slate-300 uppercase tracking-wide">What happens next</h2>
+      <div class="flex items-start gap-3">
+        <span class="flex-shrink-0 w-6 h-6 bg-brand-500 rounded-full flex items-center justify-center text-white text-xs font-bold">1</span>
+        <p class="text-sm text-slate-400">Check your inbox — a confirmation email with your login link is on its way.</p>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="flex-shrink-0 w-6 h-6 bg-brand-500 rounded-full flex items-center justify-center text-white text-xs font-bold">2</span>
+        <p class="text-sm text-slate-400">Upload your first contract and get a full AI risk analysis in under 60 seconds.</p>
+      </div>
+      <div class="flex items-start gap-3">
+        <span class="flex-shrink-0 w-6 h-6 bg-brand-500 rounded-full flex items-center justify-center text-white text-xs font-bold">3</span>
+        <p class="text-sm text-slate-400">Questions? Reply to that email or reach us at <a href="mailto:support@clauseguard.ai" class="text-brand-500 hover:underline">support@clauseguard.ai</a>.</p>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <a href="/" class="mt-8 inline-block bg-brand-500 hover:bg-brand-600 text-white font-semibold px-8 py-3 rounded-xl transition-colors">
+      Back to ClauseGuard
+    </a>
+  </div>
+
+  <script>
+    // Read tier from query string and personalise the message
+    const params = new URLSearchParams(window.location.search);
+    const tier = params.get('tier');
+    const tierLabels = { starter: 'Starter', professional: 'Professional', firm: 'Firm' };
+    const msg = document.getElementById('tier-msg');
+    if (tier && tierLabels[tier]) {
+      msg.textContent = `Your ClauseGuard ${tierLabels[tier]} subscription is active. Start reviewing contracts smarter — right now.`;
+    }
+
+    // Fire analytics event
+    if (window.plausible) {
+      window.plausible('checkout_success', { props: { tier: tier || 'unknown' } });
+    }
+  </script>
+</body>
+</html>
