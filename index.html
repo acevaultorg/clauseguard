@@ -42,6 +42,14 @@
 
   <!-- Plausible Analytics -->
   <script defer data-domain="clauseguard.vercel.app" src="https://plausible.io/js/script.js"></script>
+<script>
+window.addEventListener('error', function(e) {
+  if (window.plausible) plausible('JS Error', {props: {message: e.message, source: e.filename}});
+});
+window.addEventListener('unhandledrejection', function(e) {
+  if (window.plausible) plausible('JS Error', {props: {message: e.reason?.message || 'Promise rejected'}});
+});
+</script>
 
   <!-- Stripe.js -->
   <script src="https://js.stripe.com/v3/"></script>

@@ -25,6 +25,14 @@
   </script>
   <!-- Plausible Analytics -->
   <script defer data-domain="clauseguard.vercel.app" src="https://plausible.io/js/script.js"></script>
+<script>
+window.addEventListener('error', function(e) {
+  if (window.plausible) plausible('JS Error', {props: {message: e.message, source: e.filename}});
+});
+window.addEventListener('unhandledrejection', function(e) {
+  if (window.plausible) plausible('JS Error', {props: {message: e.reason?.message || 'Promise rejected'}});
+});
+</script>
 </head>
 <body class="min-h-screen bg-slate-900 flex items-center justify-center px-4" style="font-family:'Inter',system-ui,sans-serif;">
 
